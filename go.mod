@@ -1,6 +1,6 @@
 module github.com/palettechain/onRobot
 
-go 1.14
+go 1.16
 
 require (
 	github.com/btcsuite/btcd v0.20.1-beta
