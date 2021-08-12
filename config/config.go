@@ -1,7 +1,6 @@
 package config
 
 import (
-	"bufio"
 	"crypto/ecdsa"
 	"crypto/md5"
 	"encoding/hex"
@@ -10,11 +9,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/howeyc/gopass"
 	"github.com/palettechain/onRobot/pkg/dao"
 	"github.com/palettechain/onRobot/pkg/files"
 	"github.com/palettechain/onRobot/pkg/log"
@@ -31,13 +30,13 @@ const (
 )
 
 var (
-	Conf                  = new(Config)
-	ConfigFilePath        string
+	Conf           = new(Config)
+	ConfigFilePath string
 )
 
 type Config struct {
-	PolyRPCUrl      string
-	PolyAccountDir  string
+	PolyRPCUrl     string
+	PolyAccountDir string
 
 	EthereumRPCUrl          string
 	EthereumCrossChainAdmin string
@@ -140,7 +139,7 @@ func (c *Config) LoadPolyAccountList() []*polysdk.Account {
 func (c *Config) LoadPolyAccount(path string) (*polysdk.Account, error) {
 	polySDK := polysdk.NewPolySdk()
 
-	acc, err := getPolyAccountByPassword(polySDK, path, nil)
+	acc, err := getPolyAccountByPassword(polySDK, path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get poly account, err: %s", err)
 	}
@@ -202,43 +201,14 @@ func (c *Config) StoreEthereumPLTProxy(addr common.Address) error {
 	return SaveConfig(Conf)
 }
 
-type FinalOwner struct {
-	PaletteFinalOwner  common.Address
-	EthereumFinalOwner common.Address
-}
-
-func getPolyAccountByPassword(sdk *polysdk.PolySdk, path string, pwd []byte) (
+func getPolyAccountByPassword(sdk *polysdk.PolySdk, path string) (
 	*polysdk.Account, error) {
 	wallet, err := sdk.OpenWallet(path)
 	if err != nil {
 		return nil, fmt.Errorf("open wallet error: %v", err)
 	}
 
-	if pwd != nil {
-		acc, err := wallet.GetDefaultAccount(pwd)
-		if err == nil {
-			return acc, nil
-		}
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	for i := 0; i < 10; i++ {
-		curPwd, err := reader.ReadString('\n')
-		if err != nil {
-			log.Infof("input error, try it again......")
-			continue
-		}
-		curPwd = strings.Trim(curPwd, " ")
-		curPwd = strings.Trim(curPwd, "\r")
-		curPwd = strings.Trim(curPwd, "\n")
-		if acc, err := wallet.GetDefaultAccount([]byte(curPwd)); err == nil {
-			return acc, nil
-		} else {
-			log.Infof("password invalid, err %s, try it again......", err.Error())
-		}
-	}
-
-	return nil, fmt.Errorf("can not load account")
+	return repeatPolyDecrypt(wallet, path)
 }
 
 func SaveConfig(c *Config) error {
@@ -262,7 +232,7 @@ func getEthAccount(path string, typ pwdSessionType) (*ecdsa.PrivateKey, error) {
 		return crypto.ToECDSA(bz)
 	}
 
-	key, err := repeatDecrypt(enc, path, "", typ)
+	key, err := repeatEthDecrypt(enc, path, "", typ)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decrypt keyjson: [%v]", err)
 	}
@@ -270,8 +240,43 @@ func getEthAccount(path string, typ pwdSessionType) (*ecdsa.PrivateKey, error) {
 	return key.PrivateKey, nil
 }
 
-func repeatDecrypt(enc []byte, path string, pwd string, typ pwdSessionType) (key *keystore.Key, err error) {
-	if existPwd, err := getPwdSession(path, typ); err == nil {
+const MaxPwdInputRetry int = 20
+
+func repeatPolyDecrypt(wallet *polysdk.Wallet, path string) (acc *polysdk.Account, err error) {
+	var (
+		existPwd string
+		curPwd   []byte
+		typ      = pwdSessionPoly
+	)
+
+	if existPwd, err = getPwdSession(path, typ); err == nil {
+		acc, err = wallet.GetDefaultAccount([]byte(existPwd))
+		return
+	}
+
+	log.Infof("please input password for poly account %s", path)
+
+	for i := 0; i < MaxPwdInputRetry; i++ {
+		if curPwd, err = gopass.GetPasswd(); err != nil {
+			log.Infof("input error, try it again......")
+			continue
+		}
+		if acc, err = wallet.GetDefaultAccount(curPwd); err == nil {
+			return
+		} else {
+			log.Infof("password invalid, err %s, try it again......", err.Error())
+		}
+	}
+	return
+}
+
+func repeatEthDecrypt(enc []byte, path string, pwd string, typ pwdSessionType) (key *keystore.Key, err error) {
+	var (
+		existPwd  string
+		curPwdEnc []byte
+		curPwd    string
+	)
+	if existPwd, err = getPwdSession(path, typ); err == nil {
 		return keystore.DecryptKey(enc, existPwd)
 	}
 
@@ -282,17 +287,12 @@ func repeatDecrypt(enc []byte, path string, pwd string, typ pwdSessionType) (key
 
 	log.Infof("please input password for ethereum account %s", path)
 
-	reader := bufio.NewReader(os.Stdin)
-	var curPwd string
-	for i := 0; i < 10; i++ {
-		curPwd, err = reader.ReadString('\n')
-		if err != nil {
+	for i := 0; i < MaxPwdInputRetry; i++ {
+		if curPwdEnc, err = gopass.GetPasswd(); err != nil {
 			log.Infof("input error, try it again......")
 			continue
 		}
-		curPwd = strings.Trim(curPwd, " ")
-		curPwd = strings.Trim(curPwd, "\r")
-		curPwd = strings.Trim(curPwd, "\n")
+		curPwd = string(curPwdEnc)
 		if key, err = keystore.DecryptKey(enc, curPwd); err == nil {
 			_ = setPwdSession(path, curPwd, typ)
 			return

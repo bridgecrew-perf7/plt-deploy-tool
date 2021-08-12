@@ -7,6 +7,7 @@ require (
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/btcsuite/goleveldb v1.0.0
 	github.com/ethereum/go-ethereum v1.9.15
+	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/ontio/ontology-crypto v1.0.9
 	github.com/palettechain/palette_token v0.0.0-20210120103528-1db803afdd45
 	github.com/polynetwork/eth-contracts v0.0.1
