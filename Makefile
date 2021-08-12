@@ -6,6 +6,7 @@ GOBUILD=$(GOCMD) build
 GOTEST=$(GOCMD) test
 
 compile:
+	mkdir -p build
 	@$(GOBUILD) -o build/deploy-tool cmd/main.go
 
 tool:
