@@ -6,7 +6,7 @@ require (
 	github.com/btcsuite/btcd v0.20.1-beta
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/btcsuite/goleveldb v1.0.0
-	github.com/ethereum/go-ethereum v1.9.15
+	github.com/ethereum/go-ethereum v1.9.25
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/ontio/ontology-crypto v1.0.9
 	github.com/palettechain/palette_token v0.0.0-20210120103528-1db803afdd45
@@ -18,6 +18,6 @@ require (
 )
 
 replace (
-	github.com/ethereum/go-ethereum v1.9.15 => /Users/dylen/workspace/gohome/src/github.com/palettechain/palette
+	github.com/ethereum/go-ethereum v1.9.25 => /Users/dylen/workspace/gohome/src/github.com/palettechain/palette
 	github.com/polynetwork/eth-contracts v0.0.1 => github.com/zouxyan/eth-contracts v0.0.0-20210115072359-e4cac6edc20c
 )
