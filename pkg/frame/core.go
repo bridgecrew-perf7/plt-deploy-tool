@@ -3,7 +3,7 @@ package frame
 import (
 	"time"
 
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/log"
 )
 
 var (
@@ -72,7 +72,6 @@ func (pt *PaletteTool) runMethod(index int, methodName string) {
 		ok := method()
 		pt.onAfterMethodFinish(index, methodName, ok)
 		pt.methodsRes[methodName] = ok
-		pt.gc()
 	}
 }
 

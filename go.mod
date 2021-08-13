@@ -1,4 +1,4 @@
-module github.com/palettechain/onRobot
+module github.com/palettechain/deploy-tool
 
 go 1.16
 
@@ -11,6 +11,7 @@ require (
 	github.com/ontio/ontology-crypto v1.0.9
 	github.com/palettechain/palette_token v0.0.0-20210120103528-1db803afdd45
 	github.com/polynetwork/eth-contracts v0.0.1
+	github.com/polynetwork/nft-contracts v0.0.0-20210611024411-f14ed0d8d574
 	github.com/polynetwork/poly v1.7.2-0.20210802025248-aaa66443deb5
 	github.com/polynetwork/poly-go-sdk v0.0.0-20200817120957-365691ad3493
 	github.com/stretchr/testify v1.7.0
@@ -19,5 +20,5 @@ require (
 
 replace (
 	github.com/ethereum/go-ethereum v1.9.25 => /Users/dylen/workspace/gohome/src/github.com/palettechain/palette
-	github.com/polynetwork/eth-contracts v0.0.1 => github.com/zouxyan/eth-contracts v0.0.0-20210115072359-e4cac6edc20c
+	github.com/polynetwork/eth-contracts v0.0.1 => github.com/KSlashh/eth-contracts v0.0.0-20210813100032-17cd52477f06
 )

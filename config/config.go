@@ -14,9 +14,11 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/howeyc/gopass"
-	"github.com/palettechain/onRobot/pkg/dao"
-	"github.com/palettechain/onRobot/pkg/files"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/ontio/ontology-crypto/keypair"
+	"github.com/palettechain/deploy-tool/pkg/dao"
+	"github.com/palettechain/deploy-tool/pkg/files"
+	"github.com/palettechain/deploy-tool/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/poly"
 	polysdk "github.com/polynetwork/poly-go-sdk"
 )
 
@@ -35,6 +37,8 @@ var (
 )
 
 type Config struct {
+	LevelDB string
+
 	PolyRPCUrl     string
 	PolyAccountDir string
 
@@ -88,11 +92,7 @@ func Init(filepath string) {
 	}
 
 	// init leveldb
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	dao.NewDao(dir)
+	dao.NewDao(Conf.LevelDB)
 }
 
 func LoadConfig(filepath string, ins interface{}) error {
@@ -136,6 +136,16 @@ func (c *Config) LoadPolyAccountList() []*polysdk.Account {
 	return list
 }
 
+func (c *Config) LoadPolyCurBookeeperBytes() []byte {
+	accs := c.LoadPolyAccountList()
+	keepers := []keypair.PublicKey{}
+	for _, v := range accs {
+		keepers = append(keepers, v.PublicKey)
+	}
+	sink, _ := poly.AssemblePubKeyList(keepers)
+	return sink.Bytes()
+}
+
 func (c *Config) LoadPolyAccount(path string) (*polysdk.Account, error) {
 	polySDK := polysdk.NewPolySdk()
 
@@ -146,60 +156,61 @@ func (c *Config) LoadPolyAccount(path string) (*polysdk.Account, error) {
 	return acc, nil
 }
 
-func (c *Config) StorePaletteECCD(addr common.Address) error {
-	c.PaletteECCD = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StorePaletteECCM(addr common.Address) error {
-	c.PaletteECCM = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StorePaletteCCMP(addr common.Address) error {
-	c.PaletteCCMP = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StorePaletteNFTProxy(addr common.Address) error {
-	c.PaletteNFTProxy = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StorePaletteWrapper(addr common.Address) error {
-	c.PaletteWrapper = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StoreEthereumECCD(addr common.Address) error {
-	c.EthereumECCD = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StoreEthereumECCM(addr common.Address) error {
-	c.EthereumECCM = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StoreEthereumCCMP(addr common.Address) error {
-	c.EthereumCCMP = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StoreEthereumNFTProxy(addr common.Address) error {
-	c.EthereumNFTProxy = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StoreEthereumPLTAsset(addr common.Address) error {
-	c.EthereumPLTAsset = addr
-	return SaveConfig(Conf)
-}
-
-func (c *Config) StoreEthereumPLTProxy(addr common.Address) error {
-	c.EthereumPLTProxy = addr
-	return SaveConfig(Conf)
-}
+//
+//func (c *Config) StorePaletteECCD(addr common.Address) error {
+//	c.PaletteECCD = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StorePaletteECCM(addr common.Address) error {
+//	c.PaletteECCM = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StorePaletteCCMP(addr common.Address) error {
+//	c.PaletteCCMP = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StorePaletteNFTProxy(addr common.Address) error {
+//	c.PaletteNFTProxy = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StorePaletteWrapper(addr common.Address) error {
+//	c.PaletteWrapper = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StoreEthereumECCD(addr common.Address) error {
+//	c.EthereumECCD = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StoreEthereumECCM(addr common.Address) error {
+//	c.EthereumECCM = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StoreEthereumCCMP(addr common.Address) error {
+//	c.EthereumCCMP = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StoreEthereumNFTProxy(addr common.Address) error {
+//	c.EthereumNFTProxy = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StoreEthereumPLTAsset(addr common.Address) error {
+//	c.EthereumPLTAsset = addr
+//	return SaveConfig(Conf)
+//}
+//
+//func (c *Config) StoreEthereumPLTProxy(addr common.Address) error {
+//	c.EthereumPLTProxy = addr
+//	return SaveConfig(Conf)
+//}
 
 func getPolyAccountByPassword(sdk *polysdk.PolySdk, path string) (
 	*polysdk.Account, error) {

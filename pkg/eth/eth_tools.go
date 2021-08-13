@@ -35,7 +35,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/log"
 	"github.com/polynetwork/eth-contracts/go_abi/eccm_abi"
 )
 

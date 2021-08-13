@@ -1,7 +1,7 @@
 package poly
 
 import (
-	"github.com/palettechain/onRobot/config"
+	"github.com/palettechain/deploy-tool/config"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

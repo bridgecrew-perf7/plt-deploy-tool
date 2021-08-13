@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/palettechain/onRobot/config"
-	"github.com/palettechain/onRobot/core"
-	"github.com/palettechain/onRobot/pkg/frame"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/config"
+	"github.com/palettechain/deploy-tool/core"
+	"github.com/palettechain/deploy-tool/pkg/frame"
+	"github.com/palettechain/deploy-tool/pkg/log"
 )
 
 var (

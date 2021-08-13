@@ -1,19 +1,20 @@
 package core
 
 import (
-	"github.com/palettechain/onRobot/pkg/frame"
+	"github.com/palettechain/deploy-tool/pkg/frame"
 )
 
 func Endpoint() {
 	// palette side chain register and init
-	frame.Tool.RegMethod("plt-approve-sidechain", PLTApproveRegisterSideChain)
 	frame.Tool.RegMethod("plt-register-sidechain", PLTRegisterSideChain)
+	frame.Tool.RegMethod("plt-approve-sidechain", PLTApproveRegisterSideChain)
 	frame.Tool.RegMethod("plt-sync-plt-genesis", PLTSyncPLTGenesis)
 	frame.Tool.RegMethod("plt-sync-poly-genesis", PLTSyncPolyGenesis)
 
 	// palette contract binding relationship
 	frame.Tool.RegMethod("plt-deploy-eccd", PLTDeployECCD)
 	frame.Tool.RegMethod("plt-deploy-eccm", PLTDeployECCM)
+	frame.Tool.RegMethod("plt-recover-eccm", PLTRecoverBookeeper)
 	frame.Tool.RegMethod("plt-deploy-ccmp", PLTDeployCCMP)
 	frame.Tool.RegMethod("plt-deploy-wrap", PLTDeployWrap)
 	frame.Tool.RegMethod("plt-eccd-ownership", PLTTransferECCDOwnerShip)

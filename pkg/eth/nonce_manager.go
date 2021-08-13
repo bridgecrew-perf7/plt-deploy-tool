@@ -23,7 +23,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/log"
 )
 
 const ClearNonceInterval = 10 * time.Minute

@@ -1,10 +1,10 @@
 package core
 
 import (
-	"github.com/palettechain/onRobot/config"
-	"github.com/palettechain/onRobot/pkg/eth"
-	"github.com/palettechain/onRobot/pkg/log"
-	"github.com/palettechain/onRobot/pkg/sdk"
+	"github.com/palettechain/deploy-tool/config"
+	"github.com/palettechain/deploy-tool/pkg/eth"
+	"github.com/palettechain/deploy-tool/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/sdk"
 )
 
 func getPaletteCli() (*sdk.Client, error) {

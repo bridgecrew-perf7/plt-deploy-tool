@@ -6,7 +6,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/contracts/native/utils"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/log"
 )
 
 func (self *Client) WaitTransaction(hash common.Hash) error {

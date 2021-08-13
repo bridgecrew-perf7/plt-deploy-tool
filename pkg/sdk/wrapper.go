@@ -11,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/contracts/native"
 	"github.com/ethereum/go-ethereum/contracts/native/utils"
 	"github.com/ethereum/go-ethereum/core/types"
-	wrap_abi "github.com/palettechain/onRobot/pkg/plt_wrap_abi"
+	wrap_abi "github.com/palettechain/deploy-tool/pkg/plt_wrap_abi"
 )
 
 func (c *Client) DeployPaletteWrapper(owner, feeToken common.Address, chainId *big.Int) (common.Address, error) {

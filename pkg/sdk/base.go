@@ -22,7 +22,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/log"
 )
 
 var (

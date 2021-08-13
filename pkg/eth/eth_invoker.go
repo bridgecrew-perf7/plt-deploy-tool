@@ -27,14 +27,14 @@ import (
 	"github.com/ethereum/go-ethereum/contracts/native/utils"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/pkg/log"
 	pltabi "github.com/palettechain/palette_token/go_abi/plt"
 	"github.com/polynetwork/eth-contracts/go_abi/eccd_abi"
 	"github.com/polynetwork/eth-contracts/go_abi/eccm_abi"
 	"github.com/polynetwork/eth-contracts/go_abi/eccmp_abi"
 	"github.com/polynetwork/eth-contracts/go_abi/lock_proxy_abi"
-	"github.com/polynetwork/eth-contracts/go_abi/nftlp"
-	nftmapping "github.com/polynetwork/eth-contracts/go_abi/nftmapping_abi"
+	nftlp "github.com/polynetwork/nft-contracts/go_abi/nft_lock_proxy_abi"
+	nftmapping "github.com/polynetwork/nft-contracts/go_abi/nft_mapping_abi"
 )
 
 // 部署在以太上的PLT token来自项目github.com/palettechain/palette-token.git
@@ -97,7 +97,7 @@ func (i *EthInvoker) DeployNFTLockProxy() (common.Address, error) {
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
-	contractAddr, tx, _, err := nftlp.DeployNFTLockProxy(auth, i.backend())
+	contractAddr, tx, _, err := nftlp.DeployPolyNFTLockProxy(auth, i.backend())
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -136,7 +136,7 @@ func (i *EthInvoker) GetPLTCCMP(proxyAddr common.Address) (common.Address, error
 }
 
 func (i *EthInvoker) SetNFTCCMP(proxyAddr, ccmpAddr common.Address) (common.Hash, error) {
-	proxy, err := nftlp.NewNFTLockProxy(proxyAddr, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(proxyAddr, i.backend())
 	if err != nil {
 		return utils.EmptyHash, err
 	}
@@ -155,7 +155,7 @@ func (i *EthInvoker) SetNFTCCMP(proxyAddr, ccmpAddr common.Address) (common.Hash
 }
 
 func (i *EthInvoker) GetNFTCCMP(proxyAddr common.Address) (common.Address, error) {
-	proxy, err := nftlp.NewNFTLockProxy(proxyAddr, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(proxyAddr, i.backend())
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -163,12 +163,12 @@ func (i *EthInvoker) GetNFTCCMP(proxyAddr common.Address) (common.Address, error
 	return proxy.ManagerProxyContract(nil)
 }
 
-func (i *EthInvoker) DeployNFT(lockProxy common.Address, name, symbol string) (common.Address, error) {
+func (i *EthInvoker) DeployNFT(name, symbol string) (common.Address, error) {
 	auth, err := i.makeAuth()
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
-	address, tx, inst, err := nftmapping.DeployCrossChainNFTMapping(auth, i.backend(), lockProxy, name, symbol)
+	address, tx, inst, err := nftmapping.DeployCrossChainNFTMapping(auth, i.backend(), name, symbol)
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -279,7 +279,7 @@ func (i *EthInvoker) BindNFTAsset(
 	toAssetHash common.Address,
 	targetSideChainId uint64) (common.Hash, error) {
 
-	proxy, err := nftlp.NewNFTLockProxy(lockProxyAddr, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(lockProxyAddr, i.backend())
 	if err != nil {
 		return utils.EmptyHash, err
 	}
@@ -304,7 +304,7 @@ func (i *EthInvoker) GetBoundNFTAsset(
 	targetSideChainId uint64,
 ) (common.Address, error) {
 
-	proxy, err := nftlp.NewNFTLockProxy(lockProxyAddr, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(lockProxyAddr, i.backend())
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -322,7 +322,7 @@ func (i *EthInvoker) BindNFTProxy(
 	targetLockProxy common.Address,
 	targetSideChainID uint64,
 ) (common.Hash, error) {
-	proxy, err := nftlp.NewNFTLockProxy(localLockProxy, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(localLockProxy, i.backend())
 	if err != nil {
 		return utils.EmptyHash, err
 	}
@@ -345,7 +345,7 @@ func (i *EthInvoker) GetBoundNFTProxy(
 	localLockProxy common.Address,
 	targetSideChainID uint64,
 ) (common.Address, error) {
-	proxy, err := nftlp.NewNFTLockProxy(localLockProxy, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(localLockProxy, i.backend())
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -517,7 +517,7 @@ func (i *EthInvoker) PLTProxyOwnership(proxyAddr common.Address) (common.Address
 }
 
 func (i *EthInvoker) TransferNFTProxyOwnership(proxyAddr, newOwner common.Address) (common.Hash, error) {
-	proxy, err := nftlp.NewNFTLockProxy(proxyAddr, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(proxyAddr, i.backend())
 	if err != nil {
 		return utils.EmptyHash, err
 	}
@@ -537,7 +537,7 @@ func (i *EthInvoker) TransferNFTProxyOwnership(proxyAddr, newOwner common.Addres
 }
 
 func (i *EthInvoker) NFTProxyOwnership(proxyAddr common.Address) (common.Address, error) {
-	proxy, err := nftlp.NewNFTLockProxy(proxyAddr, i.backend())
+	proxy, err := nftlp.NewPolyNFTLockProxy(proxyAddr, i.backend())
 	if err != nil {
 		return utils.EmptyAddress, err
 	}

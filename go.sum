@@ -23,6 +23,8 @@ github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e h1:ahyvB3q25Yn
 github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e/go.mod h1:kGUqhHd//musdITWjFvNTHn90WG9bMLBEPQZ17Cmlpw=
 github.com/JohnCGriffin/overflow v0.0.0-20170615021017-4d914c927216 h1:2ZboyJ8vl75fGesnG9NpMTD2DyQI3FzMXy4x752rGF0=
 github.com/JohnCGriffin/overflow v0.0.0-20170615021017-4d914c927216/go.mod h1:X0CRv0ky0k6m906ixxpzmDRLvX58TFUKS2eePweuyxk=
+github.com/KSlashh/eth-contracts v0.0.0-20210813100032-17cd52477f06 h1:fNoimVxTfQedGTKORdvnj7mzT9fL5Litm5VZtn6dAyE=
+github.com/KSlashh/eth-contracts v0.0.0-20210813100032-17cd52477f06/go.mod h1:R8lRKM8SOtVhY3zdgx6QGnuodbnptIlN4TxindEgk6Q=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/OneOfOne/xxhash v1.2.5/go.mod h1:eZbhyaAYD41SGSSsnmcpxVoRiQ/MPUTjUdIIOT9Um7Q=
@@ -508,6 +510,8 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/polynetwork/btc-vendor-tools v0.0.0-20200813091748-3b19a5fd7666/go.mod h1:U8rR9X6vemlkBAJWfvzwSoalcJjX8B2aQjB0kPRhBUA=
 github.com/polynetwork/cosmos-poly-module v0.0.0-20200810030259-95d586518759/go.mod h1:VMBJZ8GSZeoWBntd/rWx2Rr5roRKofO7siP1qd6A6pY=
 github.com/polynetwork/eth-contracts v0.0.0-20200814062128-70f58e22b014/go.mod h1:TeePrYZfWJAwuksPlie7RPequ51Ujp5l/JY6TcutsFc=
+github.com/polynetwork/nft-contracts v0.0.0-20210611024411-f14ed0d8d574 h1:hxBFgk0erutG9N0TRIhUh9rH7FGYAxtd1CgCE0L03Zw=
+github.com/polynetwork/nft-contracts v0.0.0-20210611024411-f14ed0d8d574/go.mod h1:yJi9LDhBOUvQmnagD2qMmoInDm5532NlXsJap3yzIzE=
 github.com/polynetwork/poly v0.0.0-20200710095239-0596a3d7afe5/go.mod h1:UzlGEWk0eCGsuMJOZfBoZjRbmu4Yw/SudKAIFe1gPnY=
 github.com/polynetwork/poly v0.0.0-20200715030435-4f1d1a0adb44/go.mod h1:UzlGEWk0eCGsuMJOZfBoZjRbmu4Yw/SudKAIFe1gPnY=
 github.com/polynetwork/poly v1.7.2-0.20210802025248-aaa66443deb5 h1:qz2609dwZT8CGYYVSdRLzdH0gTSfTiYY2PJbKkqN12A=
@@ -653,8 +657,6 @@ github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:
 github.com/ybbus/jsonrpc v2.1.2+incompatible h1:V4mkE9qhbDQ92/MLMIhlhMSbz8jNXdagC3xBR5NDwaQ=
 github.com/ybbus/jsonrpc v2.1.2+incompatible/go.mod h1:XJrh1eMSzdIYFbM08flv0wp5G35eRniyeGut1z+LSiE=
 github.com/zondax/hid v0.9.0/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
-github.com/zouxyan/eth-contracts v0.0.0-20210115072359-e4cac6edc20c h1:3gzrpowqz7P1Uj7l/DqiYGBWLi+dvjzjjjxxzSIvVCI=
-github.com/zouxyan/eth-contracts v0.0.0-20210115072359-e4cac6edc20c/go.mod h1:7+sPWP1/qbE3V8HbByvuoIJpBZ0TWZF50xHAJIXQ1pA=
 github.com/zquestz/grab v0.0.0-20190224022517-abcee96e61b1 h1:1qKTeMTSIEvRIjvVYzgcRp0xVp0eoiRTTiHSncb5gD8=
 github.com/zquestz/grab v0.0.0-20190224022517-abcee96e61b1/go.mod h1:bslhAiUxakrA6z6CHmVyvkfpnxx18RJBwVyx2TluJWw=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

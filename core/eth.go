@@ -21,8 +21,8 @@ package core
 import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/contracts/native"
-	"github.com/palettechain/onRobot/config"
-	"github.com/palettechain/onRobot/pkg/log"
+	"github.com/palettechain/deploy-tool/config"
+	"github.com/palettechain/deploy-tool/pkg/log"
 )
 
 func ETHBindPLTProxy() (succeed bool) {
