@@ -1,8 +1,8 @@
 package config
 
 import (
+	"bytes"
 	"crypto/ecdsa"
-	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -19,6 +19,7 @@ import (
 	"github.com/palettechain/deploy-tool/pkg/files"
 	"github.com/palettechain/deploy-tool/pkg/log"
 	"github.com/palettechain/deploy-tool/pkg/poly"
+	"github.com/palettechain/deploy-tool/pkg/sdk"
 	polysdk "github.com/polynetwork/poly-go-sdk"
 )
 
@@ -55,7 +56,8 @@ type Config struct {
 	PaletteECCM          common.Address
 	PaletteCCMP          common.Address
 	PaletteNFTProxy      common.Address
-	PaletteWrapper       common.Address
+	PalettePLTWrapper    common.Address
+	PaletteNFTWrapper    common.Address
 
 	// ethereum side chain configuration
 	EthereumSideChainID   uint64
@@ -91,6 +93,8 @@ func Init(filepath string) {
 		panic(err)
 	}
 
+	sdk.Init()
+
 	// init leveldb
 	dao.NewDao(Conf.LevelDB)
 }
@@ -105,6 +109,85 @@ func LoadConfig(filepath string, ins interface{}) error {
 		return fmt.Errorf("json.Unmarshal TestConfig:%s error:%s", data, err)
 	}
 	return nil
+}
+
+func SaveConfig(c *Config) error {
+	type XConfig struct {
+		LevelDB string
+
+		PolyRPCUrl     string
+		PolyAccountDir string
+
+		EthereumRPCUrl          string
+		EthereumCrossChainAdmin string
+
+		PaletteRPCUrl          string
+		PaletteCrossChainAdmin string
+
+		// palette side chain
+		PaletteSideChainID   uint64
+		PaletteSideChainName string
+		PaletteECCD          common.Address
+		PaletteECCM          common.Address
+		PaletteCCMP          common.Address
+		PaletteNFTProxy      common.Address
+		PalettePLTWrapper    common.Address
+		PaletteNFTWrapper    common.Address
+
+		// ethereum side chain configuration
+		EthereumSideChainID   uint64
+		EthereumSideChainName string
+		EthereumECCD          common.Address
+		EthereumECCM          common.Address
+		EthereumCCMP          common.Address
+		EthereumPLTAsset      common.Address
+		EthereumPLTProxy      common.Address
+		EthereumNFTProxy      common.Address
+
+		// bind nft asset
+		PaletteNFTAsset  common.Address
+		EthereumNFTAsset common.Address
+	}
+
+	x := new(XConfig)
+	x.LevelDB = c.LevelDB
+	x.PolyRPCUrl = c.PolyRPCUrl
+	x.PolyAccountDir = c.PolyAccountDir
+
+	x.EthereumRPCUrl = c.EthereumRPCUrl
+	x.EthereumCrossChainAdmin = c.EthereumCrossChainAdmin
+
+	x.PaletteRPCUrl = c.PaletteRPCUrl
+	x.PaletteCrossChainAdmin = c.PaletteCrossChainAdmin
+
+	x.PaletteSideChainID = c.PaletteSideChainID
+	x.PaletteSideChainName = c.PaletteSideChainName
+	x.PaletteECCD = c.PaletteECCD
+	x.PaletteECCM = c.PaletteECCM
+	x.PaletteCCMP = c.PaletteCCMP
+	x.PaletteNFTProxy = c.PaletteNFTProxy
+	x.PalettePLTWrapper = c.PalettePLTWrapper
+	x.PaletteNFTWrapper = c.PaletteNFTWrapper
+
+	x.EthereumSideChainID = c.EthereumSideChainID
+	x.EthereumSideChainName = c.EthereumSideChainName
+	x.EthereumECCD = c.EthereumECCD
+	x.EthereumECCM = c.EthereumECCM
+	x.EthereumCCMP = c.EthereumCCMP
+	x.EthereumPLTAsset = c.EthereumPLTAsset
+	x.EthereumPLTProxy = c.EthereumPLTProxy
+	x.EthereumNFTProxy = c.EthereumNFTProxy
+
+	x.PaletteNFTAsset = c.PaletteNFTAsset
+	x.EthereumNFTAsset = c.PaletteNFTAsset
+
+	enc, err := json.Marshal(x)
+	if err != nil {
+		return err
+	}
+	var out bytes.Buffer
+	json.Indent(&out, enc, "", "\t")
+	return ioutil.WriteFile(ConfigFilePath, out.Bytes(), os.ModePerm)
 }
 
 func (c *Config) LoadPLTAdminAccount() (*ecdsa.PrivateKey, error) {
@@ -156,61 +239,65 @@ func (c *Config) LoadPolyAccount(path string) (*polysdk.Account, error) {
 	return acc, nil
 }
 
-//
-//func (c *Config) StorePaletteECCD(addr common.Address) error {
-//	c.PaletteECCD = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StorePaletteECCM(addr common.Address) error {
-//	c.PaletteECCM = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StorePaletteCCMP(addr common.Address) error {
-//	c.PaletteCCMP = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StorePaletteNFTProxy(addr common.Address) error {
-//	c.PaletteNFTProxy = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StorePaletteWrapper(addr common.Address) error {
-//	c.PaletteWrapper = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StoreEthereumECCD(addr common.Address) error {
-//	c.EthereumECCD = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StoreEthereumECCM(addr common.Address) error {
-//	c.EthereumECCM = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StoreEthereumCCMP(addr common.Address) error {
-//	c.EthereumCCMP = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StoreEthereumNFTProxy(addr common.Address) error {
-//	c.EthereumNFTProxy = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StoreEthereumPLTAsset(addr common.Address) error {
-//	c.EthereumPLTAsset = addr
-//	return SaveConfig(Conf)
-//}
-//
-//func (c *Config) StoreEthereumPLTProxy(addr common.Address) error {
-//	c.EthereumPLTProxy = addr
-//	return SaveConfig(Conf)
-//}
+func (c *Config) StorePaletteECCD(addr common.Address) error {
+	c.PaletteECCD = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StorePaletteECCM(addr common.Address) error {
+	c.PaletteECCM = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StorePaletteCCMP(addr common.Address) error {
+	c.PaletteCCMP = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StorePaletteNFTProxy(addr common.Address) error {
+	c.PaletteNFTProxy = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StorePalettePLTWrapper(addr common.Address) error {
+	c.PalettePLTWrapper = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StorePaletteNFTWrapper(addr common.Address) error {
+	c.PaletteNFTWrapper = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StoreEthereumECCD(addr common.Address) error {
+	c.EthereumECCD = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StoreEthereumECCM(addr common.Address) error {
+	c.EthereumECCM = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StoreEthereumCCMP(addr common.Address) error {
+	c.EthereumCCMP = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StoreEthereumNFTProxy(addr common.Address) error {
+	c.EthereumNFTProxy = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StoreEthereumPLTAsset(addr common.Address) error {
+	c.EthereumPLTAsset = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StoreEthereumPLTProxy(addr common.Address) error {
+	c.EthereumPLTProxy = addr
+	return SaveConfig(Conf)
+}
 
 func getPolyAccountByPassword(sdk *polysdk.PolySdk, path string) (
 	*polysdk.Account, error) {
@@ -220,14 +307,6 @@ func getPolyAccountByPassword(sdk *polysdk.PolySdk, path string) (
 	}
 
 	return repeatPolyDecrypt(wallet, path)
-}
-
-func SaveConfig(c *Config) error {
-	enc, err := json.Marshal(c)
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(ConfigFilePath, enc, os.ModePerm)
 }
 
 func getEthAccount(path string, typ pwdSessionType) (*ecdsa.PrivateKey, error) {
@@ -253,19 +332,20 @@ func getEthAccount(path string, typ pwdSessionType) (*ecdsa.PrivateKey, error) {
 
 const MaxPwdInputRetry int = 20
 
-func repeatPolyDecrypt(wallet *polysdk.Wallet, path string) (acc *polysdk.Account, err error) {
+func repeatPolyDecrypt(wallet *polysdk.Wallet, filepath string) (acc *polysdk.Account, err error) {
 	var (
 		existPwd string
 		curPwd   []byte
 		typ      = pwdSessionPoly
 	)
 
-	if existPwd, err = getPwdSession(path, typ); err == nil {
+	_, fn := path.Split(filepath)
+	if existPwd, err = getPwdSession(fn, typ); err == nil {
 		acc, err = wallet.GetDefaultAccount([]byte(existPwd))
 		return
 	}
 
-	log.Infof("please input password for poly account %s", path)
+	log.Infof("please input password for poly account %s", fn)
 
 	for i := 0; i < MaxPwdInputRetry; i++ {
 		if curPwd, err = gopass.GetPasswd(); err != nil {
@@ -281,22 +361,23 @@ func repeatPolyDecrypt(wallet *polysdk.Wallet, path string) (acc *polysdk.Accoun
 	return
 }
 
-func repeatEthDecrypt(enc []byte, path string, pwd string, typ pwdSessionType) (key *keystore.Key, err error) {
+func repeatEthDecrypt(enc []byte, filepath string, pwd string, typ pwdSessionType) (key *keystore.Key, err error) {
 	var (
 		existPwd  string
 		curPwdEnc []byte
 		curPwd    string
 	)
-	if existPwd, err = getPwdSession(path, typ); err == nil {
+	_, fn := path.Split(filepath)
+	if existPwd, err = getPwdSession(fn, typ); err == nil {
 		return keystore.DecryptKey(enc, existPwd)
 	}
 
 	if key, err = keystore.DecryptKey(enc, pwd); err == nil {
-		_ = setPwdSession(path, pwd, typ)
+		_ = setPwdSession(fn, pwd, typ)
 		return
 	}
 
-	log.Infof("please input password for ethereum account %s", path)
+	log.Infof("please input password for ethereum account %s", fn)
 
 	for i := 0; i < MaxPwdInputRetry; i++ {
 		if curPwdEnc, err = gopass.GetPasswd(); err != nil {
@@ -305,7 +386,7 @@ func repeatEthDecrypt(enc []byte, path string, pwd string, typ pwdSessionType) (
 		}
 		curPwd = string(curPwdEnc)
 		if key, err = keystore.DecryptKey(enc, curPwd); err == nil {
-			_ = setPwdSession(path, curPwd, typ)
+			_ = setPwdSession(fn, curPwd, typ)
 			return
 		} else {
 			log.Infof("password invalid, err %s, try it again......", err.Error())
@@ -318,19 +399,14 @@ func readWalletFile(path string) (enc []byte, err error) {
 	return ioutil.ReadFile(path)
 }
 
-func setPwdSession(path string, pwd string, typ pwdSessionType) error {
-	return dao.SavePwd(byte(typ), pathkey(path), []byte(pwd))
+func setPwdSession(fn string, pwd string, typ pwdSessionType) error {
+	return dao.SavePwd(byte(typ), []byte(fn), []byte(pwd))
 }
 
-func getPwdSession(path string, typ pwdSessionType) (string, error) {
-	bz, err := dao.GetPwd(byte(typ), pathkey(path))
+func getPwdSession(fn string, typ pwdSessionType) (string, error) {
+	bz, err := dao.GetPwd(byte(typ), []byte(fn))
 	if err != nil {
 		return "", err
 	}
 	return string(bz), nil
-}
-
-func pathkey(path string) []byte {
-	data := md5.Sum([]byte(path))
-	return data[:]
 }

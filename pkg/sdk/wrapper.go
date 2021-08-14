@@ -11,12 +11,13 @@ import (
 	"github.com/ethereum/go-ethereum/contracts/native"
 	"github.com/ethereum/go-ethereum/contracts/native/utils"
 	"github.com/ethereum/go-ethereum/core/types"
-	wrap_abi "github.com/palettechain/deploy-tool/pkg/plt_wrap_abi"
+	nftwp "github.com/polynetwork/nft-contracts/go_abi/nft_native_wrap_abi"
+	pltwp "github.com/polynetwork/nft-contracts/go_abi/plt_native_wrap_abi"
 )
 
-func (c *Client) DeployPaletteWrapper(owner, feeToken common.Address, chainId *big.Int) (common.Address, error) {
+func (c *Client) DeployPalettePLTWrapper(owner, proxy common.Address, chainId *big.Int) (common.Address, error) {
 	auth := c.makeDeployAuth()
-	addr, tx, _, err := wrap_abi.DeployPolyWrapper(auth, c.backend, owner, feeToken, chainId)
+	addr, tx, _, err := pltwp.DeployPolyWrapper(auth, c.backend, owner, proxy, chainId)
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -26,8 +27,20 @@ func (c *Client) DeployPaletteWrapper(owner, feeToken common.Address, chainId *b
 	return addr, nil
 }
 
-func (c *Client) PaletteWrapSetLockProxy(wrapAddr, proxyAddr common.Address) (common.Hash, error) {
-	wrapper, err := wrap_abi.NewPolyWrapper(wrapAddr, c.backend)
+func (c *Client) DeployPaletteNFTWrapper(owner common.Address, chainId *big.Int) (common.Address, error) {
+	auth := c.makeDeployAuth()
+	addr, tx, _, err := nftwp.DeployPolyNativeNFTWrapper(auth, c.backend, owner, chainId)
+	if err != nil {
+		return utils.EmptyAddress, err
+	}
+	if err := c.WaitTransaction(tx.Hash()); err != nil {
+		return utils.EmptyAddress, err
+	}
+	return addr, nil
+}
+
+func (c *Client) PaletteNFTWrapSetLockProxy(wrapAddr, proxyAddr common.Address) (common.Hash, error) {
+	wrapper, err := nftwp.NewPolyNativeNFTWrapper(wrapAddr, c.backend)
 	if err != nil {
 		return utils.EmptyHash, err
 	}
@@ -44,8 +57,8 @@ func (c *Client) PaletteWrapSetLockProxy(wrapAddr, proxyAddr common.Address) (co
 	return tx.Hash(), nil
 }
 
-func (c *Client) GetPaletteWrapLockProxy(wrapAddr common.Address) (common.Address, error) {
-	wrapper, err := wrap_abi.NewPolyWrapper(wrapAddr, c.backend)
+func (c *Client) GetPaletteNFTWrapLockProxy(wrapAddr common.Address) (common.Address, error) {
+	wrapper, err := nftwp.NewPolyNativeNFTWrapper(wrapAddr, c.backend)
 	if err != nil {
 		return utils.EmptyAddress, err
 	}
@@ -53,8 +66,8 @@ func (c *Client) GetPaletteWrapLockProxy(wrapAddr common.Address) (common.Addres
 	return wrapper.LockProxy(nil)
 }
 
-func (c *Client) PaletteWrapLock(wrapAddr, fromAsset, toAddr common.Address, toChainId uint64, amount, fee, id *big.Int) (common.Hash, error) {
-	wrapper, err := wrap_abi.NewPolyWrapper(wrapAddr, c.backend)
+func (c *Client) PalettePLTWrapLock(wrapAddr, fromAsset, toAddr common.Address, toChainId uint64, amount, fee, id *big.Int) (common.Hash, error) {
+	wrapper, err := pltwp.NewPolyWrapper(wrapAddr, c.backend)
 	if err != nil {
 		return utils.EmptyHash, err
 	}

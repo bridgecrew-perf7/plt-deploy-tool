@@ -16,17 +16,20 @@ func Endpoint() {
 	frame.Tool.RegMethod("plt-deploy-eccm", PLTDeployECCM)
 	frame.Tool.RegMethod("plt-recover-eccm", PLTRecoverBookeeper)
 	frame.Tool.RegMethod("plt-deploy-ccmp", PLTDeployCCMP)
-	frame.Tool.RegMethod("plt-deploy-wrap", PLTDeployWrap)
 	frame.Tool.RegMethod("plt-eccd-ownership", PLTTransferECCDOwnerShip)
 	frame.Tool.RegMethod("plt-eccm-ownership", PLTTransferECCMOwnerShip)
 	frame.Tool.RegMethod("plt-plt-ccmp", PLTSetCCMP)
 	frame.Tool.RegMethod("plt-bind-plt-proxy", PLTBindPLTProxy)
 	frame.Tool.RegMethod("plt-bind-plt-asset", PLTBindPLTAsset)
-	frame.Tool.RegMethod("plt-wrap-set-proxy", PLTWrapperSetLockProxy)
 	frame.Tool.RegMethod("plt-deploy-nft-proxy", PLTDeployNFTProxy)
 	frame.Tool.RegMethod("plt-bind-nft-proxy", PLTBindNFTProxy)
 	frame.Tool.RegMethod("plt-bind-nft-asset", PLTBindNFTAsset)
 	frame.Tool.RegMethod("plt-nft-ccmp", PLTSetNFTCCMP)
+
+	// palette deploy wrap
+	frame.Tool.RegMethod("plt-deploy-plt-wrap", PLTDeployPLTWrap)
+	frame.Tool.RegMethod("plt-deploy-nft-wrap", PLTDeployNFTWrap)
+	frame.Tool.RegMethod("plt-set-nft-wrap-proxy", PLTNFTWrapperSetLockProxy)
 
 	// ethereum bind proxy and asset
 	frame.Tool.RegMethod("eth-bind-plt-proxy", ETHBindPLTProxy)

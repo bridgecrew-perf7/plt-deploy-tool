@@ -34,6 +34,11 @@ func PLTDeployECCD() (succeed bool) {
 		return
 	}
 
+	if err := config.Conf.StorePaletteECCD(eccd); err != nil {
+		log.Errorf("store palette eccd err: %v", err)
+		return
+	}
+
 	log.Infof("deploy eccd %s on palette success!", eccd.Hex())
 
 	return true
@@ -59,6 +64,11 @@ func PLTDeployECCM() (succeed bool) {
 		return
 	}
 
+	if err := config.Conf.StorePaletteECCM(eccm); err != nil {
+		log.Errorf("store palette eccm err: %v", err)
+		return
+	}
+
 	log.Infof("deploy eccm %s on palette success!", eccm.Hex())
 
 	return true
@@ -74,7 +84,7 @@ func PLTRecoverBookeeper() (succeed bool) {
 	eccm := config.Conf.PaletteECCM
 	keepers := config.Conf.LoadPolyCurBookeeperBytes()
 	if _, err := cli.RecoverECCM(eccm, keepers); err != nil {
-		log.Errorf("deploy eccm on palette failed, err: %s", err.Error())
+		log.Errorf("recover eccm on palette failed, err: %s", err.Error())
 		return
 	}
 
@@ -93,6 +103,11 @@ func PLTDeployCCMP() (succeed bool) {
 	ccmp, err := cli.DeployCCMP(eccm)
 	if err != nil {
 		log.Errorf("deploy ccmp on palette failed, err: %s", err.Error())
+		return
+	}
+
+	if err := config.Conf.StorePaletteCCMP(ccmp); err != nil {
+		log.Errorf("store palette ccmp err: %v", err)
 		return
 	}
 
@@ -179,7 +194,6 @@ func PLTSetCCMP() (succeed bool) {
 	}
 
 	ccmp := config.Conf.PaletteCCMP
-
 	cur, _ := cli.GetPLTCCMP("latest")
 	if cur == ccmp {
 		log.Infof("PLT proxy already managed by %s", ccmp.Hex())
@@ -188,7 +202,7 @@ func PLTSetCCMP() (succeed bool) {
 
 	hash, err := cli.SetPLTCCMP(ccmp)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("PLT set proxy ccmp failed, err: %v", err)
 		return
 	}
 
@@ -292,6 +306,11 @@ func PLTDeployNFTProxy() (succeed bool) {
 	proxy, err := cli.DeployNFTProxy()
 	if err != nil {
 		log.Errorf("deploy NFT proxy on palette failed, err: %s", err.Error())
+		return
+	}
+
+	if err := config.Conf.StorePaletteNFTProxy(proxy); err != nil {
+		log.Errorf("store palette nft proxy err: %v", err)
 		return
 	}
 
@@ -419,53 +438,81 @@ func PLTBindNFTAsset() (succeed bool) {
 	return true
 }
 
-func PLTDeployWrap() (succeed bool) {
+func PLTDeployPLTWrap() (succeed bool) {
 	cli, err := getPaletteCli()
 	if err != nil {
 		log.Errorf("get palette cross chain admin client failed")
 		return
 	}
 
-	feeToken := common.HexToAddress(native.PLTContractAddress)
+	proxy := common.HexToAddress(native.PLTContractAddress)
 	chainId := new(big.Int).SetUint64(config.Conf.PaletteSideChainID)
 
-	contractAddr, err := cli.DeployPaletteWrapper(cli.Address(), feeToken, chainId)
+	contractAddr, err := cli.DeployPalettePLTWrapper(cli.Address(), proxy, chainId)
 	if err != nil {
-		log.Errorf("deploy wrap on palette failed, err: %s", err.Error())
+		log.Errorf("deploy plt wrap on palette failed, err: %s", err.Error())
 		return
 	}
 
-	log.Infof("deploy wrap %s on palette success!", contractAddr.Hex())
+	if err := config.Conf.StorePalettePLTWrapper(contractAddr); err != nil {
+		log.Errorf("store plt wrap failed, err: %v", err)
+		return
+	}
+
+	log.Infof("deploy plt wrap %s on palette success!", contractAddr.Hex())
 	return true
 }
 
-func PLTWrapperSetLockProxy() (succeed bool) {
+func PLTDeployNFTWrap() (succeed bool) {
 	cli, err := getPaletteCli()
 	if err != nil {
 		log.Errorf("get palette cross chain admin client failed")
 		return
 	}
 
-	wrapAddr := config.Conf.PaletteWrapper
-	targetLockProxy := common.HexToAddress(native.PLTContractAddress)
+	chainId := new(big.Int).SetUint64(config.Conf.PaletteSideChainID)
+	contractAddr, err := cli.DeployPaletteNFTWrapper(cli.Address(), chainId)
+	if err != nil {
+		log.Errorf("deploy nft wrap on palette failed, err: %s", err.Error())
+		return
+	}
 
-	cur, _ := cli.GetPaletteWrapLockProxy(wrapAddr)
-	if bytes.Equal(cur.Bytes(), targetLockProxy.Bytes()) {
-		log.Infof("wrapper proxy %s already settled", targetLockProxy.Hex())
+	if err := config.Conf.StorePaletteNFTWrapper(contractAddr); err != nil {
+		log.Errorf("store nft wrap failed, err: %v", err)
+		return
+	}
+
+	log.Infof("deploy nft wrap %s on palette success!", contractAddr.Hex())
+	return true
+}
+
+func PLTNFTWrapperSetLockProxy() (succeed bool) {
+	cli, err := getPaletteCli()
+	if err != nil {
+		log.Errorf("get palette cross chain admin client failed")
+		return
+	}
+
+	wrapAddr := config.Conf.PaletteNFTWrapper
+	targetLockProxy := config.Conf.PaletteNFTProxy
+
+	cur, _ := cli.GetPaletteNFTWrapLockProxy(wrapAddr)
+	if cur == targetLockProxy {
+		log.Infof("nft wrapper proxy %s already settled", targetLockProxy.Hex())
 		return true
 	}
 
-	if _, err := cli.PaletteWrapSetLockProxy(wrapAddr, targetLockProxy); err != nil {
-		log.Errorf("wrapper set lock proxy failed, err: %v", err)
+	if _, err := cli.PaletteNFTWrapSetLockProxy(wrapAddr, targetLockProxy); err != nil {
+		log.Errorf("nft wrapper set lock proxy failed, err: %v", err)
 		return false
 	}
 
-	got, _ := cli.GetPaletteWrapLockProxy(wrapAddr)
-	if bytes.Equal(cur.Bytes(), targetLockProxy.Bytes()) {
-		log.Infof("wrapper proxy set failed, expect %s, got %s", targetLockProxy.Hex(), got.Hex())
+	got, _ := cli.GetPaletteNFTWrapLockProxy(wrapAddr)
+	if got != targetLockProxy {
+		log.Infof("nft wrapper proxy set failed, expect %s, got %s", targetLockProxy.Hex(), got.Hex())
 		return true
 	}
 
-	log.Infof("wrap set lock proxy %s on palette success!", targetLockProxy.Hex())
+	log.Infof("nft wrap set lock proxy %s on palette success!", targetLockProxy.Hex())
 	return true
 }

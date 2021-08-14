@@ -28,25 +28,22 @@ import (
 var (
 	PLTABI, GovernanceABI,
 	NFTABI, NFTManagerABI abi.ABI
-	PLTAddress               = common.HexToAddress(native.PLTContractAddress)
-	GovernanceAddress        = common.HexToAddress(native.GovernanceContractAddress)
-	NFTMangerAddress         = common.HexToAddress(native.NFTContractCreateAddress)
-	gasLimit, deployGasLimit uint64
-	blockPeriod              time.Duration
+	PLTAddress              = common.HexToAddress(native.PLTContractAddress)
+	NFTMangerAddress        = common.HexToAddress(native.NFTContractCreateAddress)
+	gasLimit         uint64 = 2100000
+	deployGasLimit   uint64 = 10000000000
+	blockPeriod             = 6 * time.Second
 )
 
 const (
 	gasPrice = 0
 )
 
-func Init(_gasLimit, _deployGasLimit uint64, _blockPeriod time.Duration) {
+func Init() {
 	PLTABI = plt.GetABI()
 	GovernanceABI = governance.GetABI()
 	NFTABI = nft.GetABI()
 	NFTManagerABI = nftmanager.GetABI()
-	gasLimit = _gasLimit
-	deployGasLimit = _deployGasLimit
-	blockPeriod = _blockPeriod
 }
 
 func (c *Client) GetBlockNumber() uint64 {
