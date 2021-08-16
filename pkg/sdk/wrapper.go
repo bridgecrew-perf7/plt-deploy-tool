@@ -27,9 +27,9 @@ func (c *Client) DeployPalettePLTWrapper(owner, proxy common.Address, chainId *b
 	return addr, nil
 }
 
-func (c *Client) DeployPaletteNFTWrapper(owner common.Address, chainId *big.Int) (common.Address, error) {
+func (c *Client) DeployPaletteNFTWrapper(owner, feeToken common.Address, chainId *big.Int) (common.Address, error) {
 	auth := c.makeDeployAuth()
-	addr, tx, _, err := nftwp.DeployPolyNativeNFTWrapper(auth, c.backend, owner, chainId)
+	addr, tx, _, err := nftwp.DeployPolyNativeNFTWrapper(auth, c.backend, owner, chainId, feeToken)
 	if err != nil {
 		return utils.EmptyAddress, err
 	}

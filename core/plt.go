@@ -471,7 +471,8 @@ func PLTDeployNFTWrap() (succeed bool) {
 	}
 
 	chainId := new(big.Int).SetUint64(config.Conf.PaletteSideChainID)
-	contractAddr, err := cli.DeployPaletteNFTWrapper(cli.Address(), chainId)
+	feeToken := common.HexToAddress(native.PLTContractAddress)
+	contractAddr, err := cli.DeployPaletteNFTWrapper(cli.Address(), feeToken, chainId)
 	if err != nil {
 		log.Errorf("deploy nft wrap on palette failed, err: %s", err.Error())
 		return
