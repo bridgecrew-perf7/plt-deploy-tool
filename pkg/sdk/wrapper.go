@@ -13,11 +13,24 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	nftwp "github.com/polynetwork/nft-contracts/go_abi/nft_native_wrap_abi"
 	pltwp "github.com/polynetwork/nft-contracts/go_abi/plt_native_wrap_abi"
+	nftqy "github.com/polynetwork/nft-contracts/go_abi/nft_query_abi"
 )
 
 func (c *Client) DeployPalettePLTWrapper(owner, proxy common.Address, chainId *big.Int) (common.Address, error) {
 	auth := c.makeDeployAuth()
 	addr, tx, _, err := pltwp.DeployPolyWrapper(auth, c.backend, owner, proxy, chainId)
+	if err != nil {
+		return utils.EmptyAddress, err
+	}
+	if err := c.WaitTransaction(tx.Hash()); err != nil {
+		return utils.EmptyAddress, err
+	}
+	return addr, nil
+}
+
+func (c *Client) DeployPaletteNFTQuery(owner common.Address, limit uint64) (common.Address, error) {
+	auth := c.makeDeployAuth()
+	addr, tx, _, err := nftqy.DeployPolyNFTQuery(auth, c.backend, owner, new(big.Int).SetUint64(limit))
 	if err != nil {
 		return utils.EmptyAddress, err
 	}

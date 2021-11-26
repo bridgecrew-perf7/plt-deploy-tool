@@ -29,6 +29,7 @@ func Endpoint() {
 	// palette deploy wrap
 	frame.Tool.RegMethod("plt-deploy-plt-wrap", PLTDeployPLTWrap)
 	frame.Tool.RegMethod("plt-deploy-nft-wrap", PLTDeployNFTWrap)
+	frame.Tool.RegMethod("plt-deploy-nft-query", PLTDeployNFTQuery)
 	frame.Tool.RegMethod("plt-set-nft-wrap-proxy", PLTNFTWrapperSetLockProxy)
 
 	// ethereum bind proxy and asset

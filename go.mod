@@ -9,7 +9,6 @@ require (
 	github.com/ethereum/go-ethereum v1.9.25
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/ontio/ontology-crypto v1.0.9
-	github.com/palettechain/palette_token v0.0.0-20210120103528-1db803afdd45
 	github.com/polynetwork/eth-contracts v0.0.1
 	github.com/polynetwork/nft-contracts v0.0.0-20210816104924-4164d880e4f0
 	github.com/polynetwork/poly v1.7.2-0.20210802025248-aaa66443deb5

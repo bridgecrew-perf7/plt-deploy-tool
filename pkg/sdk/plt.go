@@ -2,12 +2,33 @@ package sdk
 
 import (
 	"context"
+	"github.com/ethereum/go-ethereum/contracts/native/plt"
+	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/contracts/native/utils"
 	"github.com/palettechain/deploy-tool/pkg/log"
 )
+
+func (c *Client) BalanceOf(owner common.Address, blockNum string) (*big.Int, error) {
+	payload, err := c.packPLT(plt.MethodBalanceOf, owner)
+	if err != nil {
+		return nil, err
+	}
+
+	enc, err := c.callPLT(payload, blockNum)
+	if err != nil {
+		return nil, err
+	}
+
+	output := new(plt.MethodBalanceOfOutput)
+	if err := c.unpackPLT(plt.MethodBalanceOf, output, enc); err != nil {
+		return nil, err
+	}
+
+	return output.Balance, nil
+}
 
 func (self *Client) WaitTransaction(hash common.Hash) error {
 	for {

@@ -28,7 +28,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/palettechain/deploy-tool/pkg/log"
-	pltabi "github.com/palettechain/palette_token/go_abi/plt"
+	// pltabi "github.com/palettechain/palette_token/go_abi/plt"
 	"github.com/polynetwork/eth-contracts/go_abi/eccd_abi"
 	"github.com/polynetwork/eth-contracts/go_abi/eccm_abi"
 	"github.com/polynetwork/eth-contracts/go_abi/eccmp_abi"
@@ -441,52 +441,53 @@ func (i *EthInvoker) CCMPOwnership(ccmpAddr common.Address) (common.Address, err
 }
 
 func (i *EthInvoker) TransferPLTAssetOwnership(asset, newOwner common.Address) (common.Hash, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-
-	auth, err := i.makeAuth()
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	tx, err := instance.TransferOwnership(auth, newOwner)
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	if err := i.waitTxConfirm(tx.Hash()); err != nil {
-		return utils.EmptyHash, err
-	}
-	return tx.Hash(), nil
+	//instance, err := pltabi.NewPaletteToken(asset, i.backend())
+	//if err != nil {
+	//	return utils.EmptyHash, err
+	//}
+	//
+	//auth, err := i.makeAuth()
+	//if err != nil {
+	//	return utils.EmptyHash, err
+	//}
+	//tx, err := instance.TransferOwnership(auth, newOwner)
+	//if err != nil {
+	//	return utils.EmptyHash, err
+	//}
+	//if err := i.waitTxConfirm(tx.Hash()); err != nil {
+	//	return utils.EmptyHash, err
+	//}
+	//return tx.Hash(), nil
+	return utils.EmptyHash, nil
 }
 
-func (i *EthInvoker) AcceptOwnership(asset common.Address) (common.Hash, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-
-	auth, err := i.makeAuth()
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	tx, err := instance.AcceptOwnership(auth)
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	if err := i.waitTxConfirm(tx.Hash()); err != nil {
-		return utils.EmptyHash, err
-	}
-	return tx.Hash(), nil
-}
-
-func (i *EthInvoker) PLTAssetOwnership(asset common.Address) (common.Address, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return utils.EmptyAddress, err
-	}
-	return instance.Owner(nil)
-}
+//func (i *EthInvoker) AcceptOwnership(asset common.Address) (common.Hash, error) {
+//	instance, err := pltabi.NewPaletteToken(asset, i.backend())
+//	if err != nil {
+//		return utils.EmptyHash, err
+//	}
+//
+//	auth, err := i.makeAuth()
+//	if err != nil {
+//		return utils.EmptyHash, err
+//	}
+//	tx, err := instance.AcceptOwnership(auth)
+//	if err != nil {
+//		return utils.EmptyHash, err
+//	}
+//	if err := i.waitTxConfirm(tx.Hash()); err != nil {
+//		return utils.EmptyHash, err
+//	}
+//	return tx.Hash(), nil
+//}
+//
+//func (i *EthInvoker) PLTAssetOwnership(asset common.Address) (common.Address, error) {
+//	instance, err := pltabi.NewPaletteToken(asset, i.backend())
+//	if err != nil {
+//		return utils.EmptyAddress, err
+//	}
+//	return instance.Owner(nil)
+//}
 
 func (i *EthInvoker) TransferPLTProxyOwnership(proxyAddr, newOwner common.Address) (common.Hash, error) {
 	proxy, err := lock_proxy_abi.NewLockProxy(proxyAddr, i.backend())
@@ -542,49 +543,6 @@ func (i *EthInvoker) NFTProxyOwnership(proxyAddr common.Address) (common.Address
 		return utils.EmptyAddress, err
 	}
 	return proxy.Owner(nil)
-}
-
-func (i *EthInvoker) PLTBalanceOf(asset, user common.Address) (*big.Int, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return nil, err
-	}
-	return instance.BalanceOf(nil, user)
-}
-
-func (i *EthInvoker) PLTAllowance(asset, owner, spender common.Address) (*big.Int, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return nil, err
-	}
-	return instance.Allowance(nil, owner, spender)
-}
-
-func (i *EthInvoker) PLTApprove(asset, spender common.Address, amount *big.Int) (common.Hash, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	auth, err := i.makeAuth()
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	tx, err := instance.Approve(auth, spender, amount)
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-	if err := i.waitTxConfirm(tx.Hash()); err != nil {
-		return utils.EmptyHash, err
-	}
-	return tx.Hash(), nil
-}
-
-func (i *EthInvoker) PLTTotalSupply(asset common.Address) (*big.Int, error) {
-	instance, err := pltabi.NewPaletteToken(asset, i.backend())
-	if err != nil {
-		return nil, err
-	}
-	return instance.TotalSupply(nil)
 }
 
 func (i *EthInvoker) DumpTx(hash common.Hash) error {

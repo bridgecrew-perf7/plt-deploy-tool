@@ -49,8 +49,8 @@ make tool m=eth-bind-plt-asset
 
 ## bind proxies and PLT asset on palette chain
 ```bash
-make tool m=plt-bind-plt-proxy
 make tool m=plt-bind-nft-proxy
+make tool m=plt-bind-plt-proxy
 make tool m=plt-bind-plt-asset
 ```
 

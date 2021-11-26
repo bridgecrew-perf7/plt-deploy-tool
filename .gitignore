@@ -1,2 +1,4 @@
 .idea
 build
+deploy-tool-darwin-amd64
+deploy-tool-darwin-amd64.tar.gz

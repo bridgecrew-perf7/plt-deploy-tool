@@ -487,6 +487,29 @@ func PLTDeployNFTWrap() (succeed bool) {
 	return true
 }
 
+func PLTDeployNFTQuery() (succeed bool) {
+	cli, err := getPaletteCli()
+	if err != nil {
+		log.Errorf("get palette cross chain admin client failed")
+		return
+	}
+
+	var limit uint64 = 36
+	contractAddr, err := cli.DeployPaletteNFTQuery(cli.Address(), limit)
+	if err != nil {
+		log.Errorf("deploy nft query on palette failed, err: %s", err.Error())
+		return
+	}
+
+	if err := config.Conf.StorePaletteNFTQuery(contractAddr); err != nil {
+		log.Errorf("store nft query failed, err: %v", err)
+		return
+	}
+
+	log.Infof("deploy nft query %s on palette success!", contractAddr.Hex())
+	return true
+}
+
 func PLTNFTWrapperSetLockProxy() (succeed bool) {
 	cli, err := getPaletteCli()
 	if err != nil {

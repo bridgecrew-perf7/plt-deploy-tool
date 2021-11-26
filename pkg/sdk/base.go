@@ -30,6 +30,7 @@ var (
 	NFTABI, NFTManagerABI abi.ABI
 	PLTAddress              = common.HexToAddress(native.PLTContractAddress)
 	NFTMangerAddress        = common.HexToAddress(native.NFTContractCreateAddress)
+	GovernanceAddress        = common.HexToAddress(native.GovernanceContractAddress)
 	gasLimit         uint64 = 2100000
 	deployGasLimit   uint64 = 10000000000
 	blockPeriod             = 6 * time.Second

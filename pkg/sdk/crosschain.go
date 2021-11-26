@@ -195,42 +195,42 @@ func (c *Client) CCMPOwnership(ccmpAddr common.Address) (common.Address, error) 
 	return ccmp.Owner(nil)
 }
 
-func (c *Client) TransferCrossChainAdminOwnership(newOwner common.Address) (common.Hash, error) {
-	payload, err := c.packPLT(plt.MethodTransferOwnership, newOwner)
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-
-	hash, err := c.sendPLTTx(payload)
-	if err != nil {
-		return utils.EmptyHash, err
-	}
-
-	if err := c.WaitTransaction(hash); err != nil {
-		return utils.EmptyHash, err
-	}
-
-	return hash, nil
-}
-
-func (c *Client) CrossChainAdminOwnership(blockNum string) (common.Address, error) {
-	payload, err := c.packPLT(plt.MethodOwnership)
-	if err != nil {
-		return utils.EmptyAddress, err
-	}
-
-	enc, err := c.callPLT(payload, blockNum)
-	if err != nil {
-		return utils.EmptyAddress, err
-	}
-
-	output := new(plt.MethodOwnershipOutput)
-	if err := c.unpackPLT(plt.MethodOwnership, output, enc); err != nil {
-		return utils.EmptyAddress, err
-	}
-
-	return output.Owner, nil
-}
+//func (c *Client) TransferCrossChainAdminOwnership(newOwner common.Address) (common.Hash, error) {
+//	payload, err := c.packPLT(plt.MethodTransferOwnership, newOwner)
+//	if err != nil {
+//		return utils.EmptyHash, err
+//	}
+//
+//	hash, err := c.sendPLTTx(payload)
+//	if err != nil {
+//		return utils.EmptyHash, err
+//	}
+//
+//	if err := c.WaitTransaction(hash); err != nil {
+//		return utils.EmptyHash, err
+//	}
+//
+//	return hash, nil
+//}
+//
+//func (c *Client) CrossChainAdminOwnership(blockNum string) (common.Address, error) {
+//	payload, err := c.packPLT(plt.MethodOwnership)
+//	if err != nil {
+//		return utils.EmptyAddress, err
+//	}
+//
+//	enc, err := c.callPLT(payload, blockNum)
+//	if err != nil {
+//		return utils.EmptyAddress, err
+//	}
+//
+//	output := new(plt.MethodOwnershipOutput)
+//	if err := c.unpackPLT(plt.MethodOwnership, output, enc); err != nil {
+//		return utils.EmptyAddress, err
+//	}
+//
+//	return output.Owner, nil
+//}
 
 func (c *Client) SetPLTCCMP(ccmp common.Address) (common.Hash, error) {
 	payload, err := c.packPLT(plt.MethodSetManagerProxy, ccmp)

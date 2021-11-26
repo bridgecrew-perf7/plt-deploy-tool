@@ -23,6 +23,7 @@ import (
 	"github.com/palettechain/deploy-tool/config"
 	"github.com/palettechain/deploy-tool/pkg/log"
 	"github.com/palettechain/deploy-tool/pkg/poly"
+	"github.com/palettechain/deploy-tool/pkg/sdk"
 	polyutils "github.com/polynetwork/poly/native/service/utils"
 )
 
@@ -92,11 +93,12 @@ func PLTSyncPLTGenesis() (succeed bool) {
 
 	// 2. get palette current block header
 	logsplit()
-	cli, err := getPaletteCli()
-	if err != nil {
-		log.Errorf("get palette cross chain admin client failed")
-		return
-	}
+	cli := sdk.NewSender(config.Conf.PaletteRPCUrl, nil)
+	//cli, err := getPaletteCli()
+	//if err != nil {
+	//	log.Errorf("get palette cross chain admin client failed")
+	//	return
+	//}
 	curr, hdr, err := cli.GetCurrentBlockHeader()
 	if err != nil {
 		log.Errorf("failed to get block header, err: %s", err)

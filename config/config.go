@@ -58,6 +58,7 @@ type Config struct {
 	PaletteNFTProxy      common.Address
 	PalettePLTWrapper    common.Address
 	PaletteNFTWrapper    common.Address
+	PaletteNFTQuery  	  common.Address
 
 	// ethereum side chain configuration
 	EthereumSideChainID   uint64
@@ -133,6 +134,7 @@ func SaveConfig(c *Config) error {
 		PaletteNFTProxy      common.Address
 		PalettePLTWrapper    common.Address
 		PaletteNFTWrapper    common.Address
+		PaletteNFTQuery  	  common.Address
 
 		// ethereum side chain configuration
 		EthereumSideChainID   uint64
@@ -168,6 +170,7 @@ func SaveConfig(c *Config) error {
 	x.PaletteNFTProxy = c.PaletteNFTProxy
 	x.PalettePLTWrapper = c.PalettePLTWrapper
 	x.PaletteNFTWrapper = c.PaletteNFTWrapper
+	x.PaletteNFTQuery = c.PaletteNFTQuery
 
 	x.EthereumSideChainID = c.EthereumSideChainID
 	x.EthereumSideChainName = c.EthereumSideChainName
@@ -201,20 +204,16 @@ func (c *Config) LoadETHAdminAccount() (*ecdsa.PrivateKey, error) {
 func (c *Config) LoadPolyAccountList() []*polysdk.Account {
 	list := make([]*polysdk.Account, 0)
 
-	dir := c.PolyAccountDir
-	fs, err := ioutil.ReadDir(dir)
+	//dir := c.PolyAccountDir
+	//fs, err := ioutil.ReadDir(dir)
+	//if err != nil {
+	//	panic(err)
+	//}
+	acc, err := c.LoadPolyAccount(c.PolyAccountDir)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("fs length ", len(fs))
-	for _, f := range fs {
-		fullPath := path.Join(dir, f.Name())
-		acc, err := c.LoadPolyAccount(fullPath)
-		if err != nil {
-			panic(err)
-		}
-		list = append(list, acc)
-	}
+	list = append(list, acc)
 
 	return list
 }
@@ -266,6 +265,11 @@ func (c *Config) StorePalettePLTWrapper(addr common.Address) error {
 
 func (c *Config) StorePaletteNFTWrapper(addr common.Address) error {
 	c.PaletteNFTWrapper = addr
+	return SaveConfig(Conf)
+}
+
+func (c *Config) StorePaletteNFTQuery(addr common.Address) error {
+	c.PaletteNFTQuery = addr
 	return SaveConfig(Conf)
 }
 

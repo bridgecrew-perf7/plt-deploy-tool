@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/contracts/native/utils"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -14,6 +15,7 @@ type Client struct {
 	*rpc.Client
 	backend      *ethclient.Client
 	url          string
+	caller       common.Address
 	Key          *ecdsa.PrivateKey
 	currentNonce uint64
 }
@@ -33,6 +35,9 @@ func (c *Client) Url() string {
 }
 
 func (c *Client) Address() common.Address {
+	if c.caller != utils.EmptyAddress {
+		return c.caller
+	}
 	return PubKey2Address(c.Key.PublicKey)
 }
 
